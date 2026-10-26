@@ -1,0 +1,29 @@
+{
+  "name": "柏克來幼兒園新生報名（測試環境）",
+  "short_name": "新生報名測試",
+  "description": "柏克來幼兒園新生報名：線上填報名資料、上傳證明文件（測試環境）",
+  "lang": "zh-Hant",
+  "start_url": "./",
+  "scope": "./",
+  "display": "standalone",
+  "background_color": "#D8F3DC",
+  "theme_color": "#2563eb",
+  "icons": [
+    {
+      "src": "icon-192.png",
+      "sizes": "192x192",
+      "type": "image/png"
+    },
+    {
+      "src": "icon-512.png",
+      "sizes": "512x512",
+      "type": "image/png"
+    },
+    {
+      "src": "icon-maskable-512.png",
+      "sizes": "512x512",
+      "type": "image/png",
+      "purpose": "maskable"
+    }
+  ]
+}
