@@ -15,7 +15,7 @@
 <link rel="manifest" href="manifest.webmanifest">
 <link rel="icon" href="icon-192.png">
 <link rel="apple-touch-icon" href="apple-touch-icon.png">
-<style id="appcss" data-href="/join/static/campus.css?v=a21e045758">
+<style id="appcss" data-href="/join/static/campus.css?v=9385b4326b">
 /* 智慧校園系統共用樣式：手機優先，桌機只是加寬。基本款沿用請假系統的 style.css，
    各艙看起來是同一套系統。外殼頁只抓頁面的第一個樣式表，所以各艙自己的樣式也寫在這裡。 */
 :root{
@@ -202,6 +202,16 @@ button.chip{font-family:inherit;color:var(--ink)}
 .attgrid{display:flex;flex-wrap:wrap;gap:8px;margin-top:4px}
 .attgrid img{width:120px;height:90px;object-fit:cover;border-radius:8px;border:1px solid var(--line)}
 .attgrid .pdf{display:inline-block;padding:6px 10px;border:1px solid var(--line);border-radius:8px;font-size:14px}
+/* 規章內文（app/policy.py 排版）：系統裡看、列印都像一份文件 */
+.docbody{font-size:15px;line-height:1.7;color:var(--ink)}
+.docbody h2{font-size:19px;margin:4px 0 10px;text-align:center}
+.docbody h3{font-size:16px;margin:16px 0 6px}
+.docbody h4{font-size:15px;margin:12px 0 4px}
+.docbody p{margin:6px 0}
+.docbody ul{margin:4px 0 8px;padding-left:22px}
+.docbody .grid{margin:6px 0 10px}
+.docbody .grid td,.docbody .grid th{vertical-align:top}
+textarea.doctext{font-size:14px;line-height:1.6}
 
 /* ── 新生報名（家長公開入口 /join、園方 /enroll）─────────────── */
 .joinhead{background:#e8f5ec;border:1px solid #bfe3cb;border-radius:12px;padding:10px 14px;margin-bottom:14px;font-weight:600}
@@ -329,7 +339,7 @@ function showFatal(t) {
 }
 </script>
 </head>
-<body data-pubkey="BIDalvOq+EgrsdL8UPLgARUqtbyjCn6ZdfWbgvAIm8ZGMNUdRxhv/ZtEkQztYKiTq5CHRxOB/4fImg+Huej+5f4=" data-exec="https://bk-gw-relay-test.bklkidsgarden.workers.dev/" data-home="/join/" data-login="/join/" data-session="join_device">
+<body data-pubkey="BIDalvOq+EgrsdL8UPLgARUqtbyjCn6ZdfWbgvAIm8ZGMNUdRxhv/ZtEkQztYKiTq5CHRxOB/4fImg+Huej+5f4=" data-exec="https://bk-gw-relay-test.bklkidsgarden.workers.dev/" data-home="/join/" data-login="/join/" data-session="join_device" data-entry="enroll">
 <pre id="fatal" hidden></pre>
 <div id="busy" hidden>連線中…</div>
 <div id="sheet" hidden></div>
@@ -834,6 +844,8 @@ const Shell = (() => {
   const HOME = document.body.dataset.home || '/';
   const LOGIN = document.body.dataset.login || '/login';
   const SESSION = document.body.dataset.session || 'leave_session';
+  // 這是哪個 App（build.py）：每一筆請求都帶給閘道，老師的 App 只給老師的權限
+  const ENTRY = document.body.dataset.entry || '';
   let current = HOME;
   // 系統的樣式表：外殼頁內建一份（build.py），其他抓過的記在這台手機（網址帶內容雜湊，改版就是新網址）。
   // 校園版每一艙的樣式表不同（入口首頁、請假系統…），記住抓過的，來回切換才不必每次多跑一趟 Google。
@@ -893,6 +905,7 @@ const Shell = (() => {
     const c = Jar.header();
     if (c) headers.cookie = c;
     if (contentType) headers['content-type'] = contentType;
+    if (ENTRY) headers['x-campus-entry'] = ENTRY;
     const r = await Gw.call({ method, path, headers }, body);
     Jar.update(r.headers['set-cookie']);
     return r;
